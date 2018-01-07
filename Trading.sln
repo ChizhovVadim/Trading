@@ -1,0 +1,35 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading", "Trading\Trading.csproj", "{4F75FF6D-BA09-425B-A922-3A0D9ABDBE1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Core", "Trading.Core\Trading.Core.csproj", "{E028D655-8EF4-44E5-8339-5E86DD04C009}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.Advisor", "Trading.Advisor\Trading.Advisor.csproj", "{390203BB-7826-4A2B-8A7E-A797503390E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trading.QuikLuaTrader", "Trading.QuikLuaTrader\Trading.QuikLuaTrader.csproj", "{0D0E785C-DA12-4249-A37F-3AC779991794}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F75FF6D-BA09-425B-A922-3A0D9ABDBE1C}.Debug|x86.ActiveCfg = Debug|x86
+		{4F75FF6D-BA09-425B-A922-3A0D9ABDBE1C}.Debug|x86.Build.0 = Debug|x86
+		{4F75FF6D-BA09-425B-A922-3A0D9ABDBE1C}.Release|x86.ActiveCfg = Release|x86
+		{4F75FF6D-BA09-425B-A922-3A0D9ABDBE1C}.Release|x86.Build.0 = Release|x86
+		{E028D655-8EF4-44E5-8339-5E86DD04C009}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E028D655-8EF4-44E5-8339-5E86DD04C009}.Debug|x86.Build.0 = Debug|Any CPU
+		{E028D655-8EF4-44E5-8339-5E86DD04C009}.Release|x86.ActiveCfg = Release|Any CPU
+		{E028D655-8EF4-44E5-8339-5E86DD04C009}.Release|x86.Build.0 = Release|Any CPU
+		{390203BB-7826-4A2B-8A7E-A797503390E3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{390203BB-7826-4A2B-8A7E-A797503390E3}.Debug|x86.Build.0 = Debug|Any CPU
+		{390203BB-7826-4A2B-8A7E-A797503390E3}.Release|x86.ActiveCfg = Release|Any CPU
+		{390203BB-7826-4A2B-8A7E-A797503390E3}.Release|x86.Build.0 = Release|Any CPU
+		{0D0E785C-DA12-4249-A37F-3AC779991794}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0D0E785C-DA12-4249-A37F-3AC779991794}.Debug|x86.Build.0 = Debug|Any CPU
+		{0D0E785C-DA12-4249-A37F-3AC779991794}.Release|x86.ActiveCfg = Release|Any CPU
+		{0D0E785C-DA12-4249-A37F-3AC779991794}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

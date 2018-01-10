@@ -34,8 +34,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DomainTypes.cs" />
-    <Compile Include="MailboxProcessor.cs" />
     <Compile Include="TableHelper.cs" />
+    <Compile Include="Dispatcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

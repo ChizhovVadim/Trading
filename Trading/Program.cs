@@ -70,7 +70,6 @@ namespace Trading
 				logger.Information("Application started.");
 				LogEnvironment(logger);
 				logger.Information("Client {Client}", client.Key);
-				MailboxProcessor.OnError += ex => logger.Error(ex, "Mailbox.OnError");
 
 				using (var container = new UnityContainer())
 				{

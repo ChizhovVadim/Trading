@@ -10,50 +10,41 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Trading.Core;
-namespace Trading
+namespace LuaTrader
 {
     class RestAdvisorService : IAdvisorService
     {
         static Serilog.ILogger logger = Serilog.Log.ForContext<RestAdvisorService>();
-        bool publishCandles;
         AdvisorClient advisorClient;
-        ICandleService candleService;
 
-        public RestAdvisorService(bool publishCandles, AdvisorClient advisorClient, ICandleService candleService)
+        public RestAdvisorService(AdvisorClient advisorClient)
         {
-            this.publishCandles = publishCandles;
             this.advisorClient = advisorClient;
-            this.candleService = candleService;
         }
+
+		public void PublishCandles(BlockingCollection<Candle> candles, CancellationToken token)
+		{
+			var candlesToSend = new List<Candle>();
+			foreach (var candle in candles.GetConsumingEnumerable(token))
+			{
+				candlesToSend.Add(candle);
+				if (candle.DateTime > DateTime.Now.AddMinutes(-9))
+				{
+					try
+					{
+						advisorClient.PostCandles(candlesToSend).GetAwaiter().GetResult();
+						candlesToSend.Clear();
+					}
+					catch (Exception e)
+					{
+						logger.Warning(e, "PublishCandles error");
+					}
+				}
+			}
+		}
 
         public BlockingCollection<Advice> GetAdvices(string security, CancellationToken token)
         {
-            if (publishCandles)
-            {
-                Task.Run(() =>
-                {
-                    logger.Information("Настройка публикации баров");
-                    var candlesToSend = new List<Candle>();
-                    var candles = candleService.GetCandles(security, token);
-                    foreach (var candle in candles.GetConsumingEnumerable(token))
-                    {
-                        candlesToSend.Add(candle);
-                        if (candle.DateTime > DateTime.Now.AddMinutes(-5))
-                        {
-                            try
-                            {
-                                advisorClient.PostCandles(candlesToSend).GetAwaiter().GetResult();
-                                candlesToSend.Clear();
-                            }
-                            catch (Exception e)
-                            {
-                                logger.Warning(e, "PublishCandles error");
-                            }
-                        }
-                    }
-                });
-            }
             var result = new BlockingCollection<Advice>();
             const int Timeout = 90;
             Task.Run(async () =>

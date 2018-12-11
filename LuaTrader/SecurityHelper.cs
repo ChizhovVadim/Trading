@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Trading.QuikLuaTrader
+namespace LuaTrader
 {
     static class SecurityHelper
     {

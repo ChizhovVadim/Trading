@@ -118,9 +118,27 @@ namespace LuaTrader
 			return availableAmount;
 		}
 
-		public void AutoStart()
+		public void AutoStart(TimeSpan startTime, TimeSpan minDelay)
 		{
-			//TODO
+			TimeSpan ts = minDelay;
+			TimeSpan delta = startTime - DateTime.Now.TimeOfDay;
+			if (delta > TimeSpan.Zero) {
+				ts += delta;
+			}
+
+			Task.Run(async () =>
+				{
+					logger.Warning("Autostart after {Delay}.", ts);
+					await Task.Delay(ts).ConfigureAwait(false);
+					try
+					{
+						Start ();
+					}
+					catch (Exception e)
+					{
+						logger.Error(e, "AutoStartCommand");
+					}
+				});
 		}
 	}
 }

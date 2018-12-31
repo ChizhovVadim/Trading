@@ -9,17 +9,17 @@ namespace LuaTrader
 	{
 		static Serilog.ILogger logger = Serilog.Log.ForContext<ExecutionStrategy> ();
 
-		ITraderService trader;
+		ITraderService traderService;
 		string portfolio;
 		string security;
 		int strategyPosition;
 
-		public ExecutionStrategy (ITraderService trader, string portfolio, string security)
+		public ExecutionStrategy (ITraderService traderService, string portfolio, string security)
 		{
-			this.trader = trader;
+			this.traderService = traderService;
 			this.portfolio = portfolio;
 			this.security = security;
-			this.strategyPosition = trader.GetPosition (portfolio, security);
+			this.strategyPosition = traderService.GetPosition (portfolio, security);
 			logger
 				.ForContext ("Portfolio", portfolio)
 				.ForContext ("Security", security)
@@ -47,16 +47,16 @@ namespace LuaTrader
 			}
 		}
 
-		public void OpenPosition (double price, double position)
+		void OpenPosition (double price, double position)
 		{
-			if (!IsPositionOk ()) {
-				return;
-			}
 			var volume = (int)(position - strategyPosition);
 			if (volume == 0) {
 				return;
 			}
-			trader.RegisterOrder (portfolio, security, volume, price, CancellationToken.None);
+			if (!IsPositionOk ()) {
+				return;
+			}
+			traderService.RegisterOrder (portfolio, security, volume, price, CancellationToken.None);
 			strategyPosition += volume;
 			Task.Delay (TimeSpan.FromSeconds (30))
 				.ContinueWith (_ => IsPositionOk ());
@@ -64,7 +64,7 @@ namespace LuaTrader
 
 		bool IsPositionOk ()
 		{
-			var traderPosition = trader.GetPosition (portfolio, security);
+			var traderPosition = traderService.GetPosition (portfolio, security);
 			if (strategyPosition == traderPosition) {
 				return true;
 			}

@@ -22,8 +22,7 @@ namespace LuaTrader
 		public QuikLuaTraderService (Client config)
 		{
 			this.config = config;
-			//TODO get port from config
-			this.quik = new Quik(Quik.DefaultPort, new InMemoryStorage());
+			this.quik = new Quik(config.Port == 0 ? Quik.DefaultPort: config.Port, new InMemoryStorage());
 		}
 
 		public void Terminal ()

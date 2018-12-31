@@ -62,5 +62,8 @@ namespace LuaTrader
 
 		[XmlAttribute]
 		public bool PublishCandles { get; set; }
+
+		[XmlAttribute]
+		public int Port{ get; set; }
 	}
 }

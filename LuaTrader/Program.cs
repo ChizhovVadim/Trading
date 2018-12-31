@@ -82,7 +82,9 @@ namespace LuaTrader
 				});
 
 				if (appFlags.AutoStart) {
-					strategyManager.AutoStart();
+					strategyManager.AutoStart(
+						TimeSpan.Parse (appSettings.StartTime),
+						TimeSpan.FromSeconds (clientIndex * 30));
 				}
 
 				CommandManager.Run (commands);

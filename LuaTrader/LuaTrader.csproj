@@ -55,14 +55,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DomainTypes.cs" />
-    <Compile Include="QuikLuaTraderService.cs" />
-    <Compile Include="ExecutionStrategy.cs" />
     <Compile Include="RestAdvisorService.cs" />
     <Compile Include="SecurityHelper.cs" />
-    <Compile Include="StrategyManager.cs" />
     <Compile Include="StrategySettings.cs" />
     <Compile Include="CommandManager.cs" />
     <Compile Include="QuikTerminal.cs" />
+    <Compile Include="StrategyService.cs" />
+    <Compile Include="TableHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

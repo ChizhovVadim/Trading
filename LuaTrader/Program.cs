@@ -52,7 +52,7 @@ namespace LuaTrader
 				.CreateLogger ();
 
 			var logger = Serilog.Log.Logger.ForContext<MainClass> ();
-			StrategyManager strategyManager = null;
+			StrategyService  strategyManager = null;
 
 			try {
 				SetCulture ();
@@ -61,14 +61,13 @@ namespace LuaTrader
 				logger.Information ("Client {Client}", client.Key);
 
 				var advisor = new RestAdvisorService (new AdvisorClient (appSettings.AdvisorUrl));
-				var trader = new QuikLuaTraderService (client);
-				strategyManager = new StrategyManager (advisor, trader, trader, client);
+				strategyManager = new StrategyService (advisor, client);
 
 				var commands = new List<Command> ();
 				commands.Add (new Command () {
 					Name = "terminal",
 					Description = "Запускает терминал",
-					Handler = trader.Terminal
+					Handler = strategyManager.Terminal
 				});
 				commands.Add (new Command () {
 					Name = "start",

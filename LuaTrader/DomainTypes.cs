@@ -22,11 +22,6 @@ namespace LuaTrader
 		public double Volume{ get; set; }
 	}
 
-	public interface ICandleService
-	{
-		BlockingCollection<Candle> GetCandles (string security, CancellationToken token);
-	}
-
 	[DataContract]
 	public class Advice
 	{
@@ -47,19 +42,9 @@ namespace LuaTrader
 	{
 		List<string> GetSecurities ();
 
+		//TODO void GetAdvices (string security, BlockingCollection<Advice> outAdvices, CancellationToken token);
 		BlockingCollection<Advice> GetAdvices (string security, CancellationToken token);
 
 		void PublishCandles (BlockingCollection<Candle> candles, CancellationToken token);
-	}
-
-	public interface ITraderService
-	{
-		void Terminal ();
-
-		double GetAmount (string portfolio);
-
-		int GetPosition (string portfolio, string security);
-
-		void RegisterOrder (string portfolio, string security, int volume, double price, CancellationToken token);
 	}
 }

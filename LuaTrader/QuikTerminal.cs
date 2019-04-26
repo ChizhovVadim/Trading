@@ -30,6 +30,23 @@ namespace LuaTrader
 		{
 			wnd.HWnd.SendMessage((int)COMMAND, new IntPtr(elem.DialogID), IntPtr.Zero);
 		}
+			
+		/*//https://quikluacsharp.ru/quik-qlua/qlua-lua-skript-avtomaticheskoj-avtorizatsii/
+
+		[DllImport("user32.dll")]
+		public static extern IntPtr FindWindow (string className, string windowName);
+
+		[DllImport("user32.dll")]
+		public static extern IntPtr FindWindowEx (IntPtr hwndParent, IntPtr hwndChildAfter, string className, string windowName);
+
+		[DllImport("user32.dll")]
+		public static extern void SetWindowText (IntPtr hwnd, string lpString);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		static extern IntPtr SetFocus(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);*/
 	}
 	
 	class QuikTerminal
@@ -76,7 +93,7 @@ namespace LuaTrader
 		Process StartNewQuik()
 		{
 			var processStartInfo = new ProcessStartInfo { FileName = settings.Path };
-			processStartInfo.Verb = "runas";
+			//processStartInfo.Verb = "runas";
 			processStartInfo.UseShellExecute = true;
 			processStartInfo.WorkingDirectory = Path.GetDirectoryName(settings.Path);
 

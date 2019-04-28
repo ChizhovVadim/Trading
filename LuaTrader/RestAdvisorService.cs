@@ -17,9 +17,9 @@ namespace LuaTrader
         static Serilog.ILogger logger = Serilog.Log.ForContext<RestAdvisorService>();
         AdvisorClient advisorClient;
 
-        public RestAdvisorService(AdvisorClient advisorClient)
+		public RestAdvisorService(string url)
         {
-            this.advisorClient = advisorClient;
+			this.advisorClient = new AdvisorClient(url);
         }
 
 		public void PublishCandles(BlockingCollection<Candle> candles, CancellationToken token)
@@ -43,36 +43,25 @@ namespace LuaTrader
 			}
 		}
 
-        public BlockingCollection<Advice> GetAdvices(string security, CancellationToken token)
-        {
-            var result = new BlockingCollection<Advice>();
-            const int Timeout = 90;
-            Task.Run(async () =>
-            {
-                var since = DateTime.MinValue;
-                while (!token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        var advice = await advisorClient.GetAdvice(security, since, Timeout);
-                        if (advice != null)
-                        {
-                            if (advice.DateTime > since)
-                            {
-                                result.Add(advice);
-                                since = advice.DateTime;
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        logger.Error(e, "GetAdvices error");
-                        await Task.Delay(TimeSpan.FromMinutes(3), token);
-                    }
-                }
-            });
-            return result;
-        }
+		public void GetAdvices (string security, BlockingCollection<Advice> outAdvices, CancellationToken token)
+		{
+			const int Timeout = 90;
+			var since = DateTime.MinValue;
+			while (!token.IsCancellationRequested) {
+				try {
+					var advice = advisorClient.GetAdvice (security, since, Timeout).GetAwaiter ().GetResult ();
+					if (advice != null) {
+						if (advice.DateTime > since) {
+							outAdvices.Add (advice);
+							since = advice.DateTime;
+						}
+					}
+				} catch (Exception e) {
+					logger.Error (e, "GetAdvices error");
+					Task.Delay (TimeSpan.FromMinutes (3), token).GetAwaiter ().GetResult ();
+				}
+			}
+		}
 
         public List<string> GetSecurities()
         {

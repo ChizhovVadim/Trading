@@ -52,7 +52,7 @@ namespace LuaTrader
 				.CreateLogger ();
 
 			var logger = Serilog.Log.Logger.ForContext<MainClass> ();
-			StrategyService  strategyManager = null;
+			StrategyService  strategyService = null;
 
 			try {
 				SetCulture ();
@@ -60,28 +60,28 @@ namespace LuaTrader
 				LogEnvironment (logger);
 				logger.Information ("Client {Client}", client.Key);
 
-				var advisor = new RestAdvisorService (new AdvisorClient (appSettings.AdvisorUrl));
-				strategyManager = new StrategyService (advisor, client);
+				var advisor = new RestAdvisorService (appSettings.AdvisorUrl);
+				strategyService = new StrategyService (advisor, client);
 
 				var commands = new List<Command> ();
 				commands.Add (new Command () {
 					Name = "terminal",
 					Description = "Запускает терминал",
-					Handler = strategyManager.Terminal
+					Handler = _ => strategyService.Terminal(),
 				});
 				commands.Add (new Command () {
 					Name = "start",
 					Description = "Запускает стратегию",
-					Handler = strategyManager.Start
+					Handler = _ => strategyService.Start(),
 				});
 				commands.Add (new Command () {
 					Name = "stop",
 					Description = "Останавливает стратегию",
-					Handler = strategyManager.Stop
+					Handler = _ => strategyService.Stop(),
 				});
 
 				if (appFlags.AutoStart) {
-					strategyManager.AutoStart(
+					strategyService.AutoStart(
 						TimeSpan.Parse (appSettings.StartTime),
 						TimeSpan.FromSeconds (clientIndex * 30));
 				}
@@ -93,8 +93,8 @@ namespace LuaTrader
 				logger.Fatal (e, "Fatal error.");
 				throw;
 			} finally {
-				if (strategyManager != null) {
-					strategyManager.Dispose ();
+				if (strategyService != null) {
+					strategyService.Dispose ();
 				}
 				Serilog.Log.CloseAndFlush ();
 			}

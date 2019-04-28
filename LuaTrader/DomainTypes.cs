@@ -42,9 +42,8 @@ namespace LuaTrader
 	{
 		List<string> GetSecurities ();
 
-		//TODO void GetAdvices (string security, BlockingCollection<Advice> outAdvices, CancellationToken token);
-		BlockingCollection<Advice> GetAdvices (string security, CancellationToken token);
+		void GetAdvices (string security, BlockingCollection<Advice> outAdvices, CancellationToken token);
 
-		void PublishCandles (BlockingCollection<Candle> candles, CancellationToken token);
+		void PublishCandles (BlockingCollection<Candle> inCandles, CancellationToken token);
 	}
 }

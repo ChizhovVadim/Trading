@@ -8,7 +8,13 @@ namespace LuaTrader
 	{
 		public string Name;
 		public string Description;
-		public Action Handler;
+		public Action<CommandArgs> Handler;
+	}
+
+	class CommandArgs
+	{
+		public string Name;
+		public Dictionary<string, string> Params;
 	}
 
 	class CommandManager
@@ -23,19 +29,38 @@ namespace LuaTrader
 					return;
 				if (commandLine == "quit")
 					return;
-				var cmd = commands.FirstOrDefault (x => x.Name == commandLine);
+				var args = ParseCommandArgs (commandLine);
+				var cmd = commands.FirstOrDefault (x => x.Name == args.Name);
 				if (cmd == null) {
 					Console.WriteLine ("Command not found");
 					continue;
 				}
 				try {
-					cmd.Handler ();
+					cmd.Handler (args);
 				} catch (Exception e) {
 					logger
-						.ForContext ("CommandLine", cmd)
+						.ForContext ("CommandLine", commandLine)
 						.Error (e, "ExecuteCommand error");
 				}
 			}
+		}
+
+		static CommandArgs ParseCommandArgs(string commandLine) {
+			var tokens = commandLine.Split (' ');
+			if (tokens.Length == 0) {
+				return new CommandArgs ();
+			}
+			var param = new Dictionary<string, string>();
+			for (var i = 1; i < tokens.Length-1; i++) {
+				var token = tokens [i];
+				if (token.StartsWith ("-")) {
+					param [token.TrimStart('-')] = tokens [i + 1];
+				}
+			}
+			return new CommandArgs () {
+				Name = tokens[0],
+				Params = param,
+			};
 		}
 	}
 }

@@ -111,14 +111,23 @@ namespace LuaTrader
 			});
 
 			foreach (var security in securities) {
-				//TODO Task.Run
-				var advices = advisorService.GetAdvices (security, cts.Token);
+				var advices = new BlockingCollection<Advice>();
+
 				Task.Run (() => {
 					try {
 						ExecuteAdvices (config.Portfolio, SecurityHelper.EncodeSecurity (security), amount, advices, requiredPositions, cts.Token);
 					} catch (OperationCanceledException) {
 					} catch (Exception e) {
 						logger.Error (e, "ExecuteAdvices error");
+					}
+				});
+
+				Task.Run (() => {
+					try {
+						advisorService.GetAdvices(security, advices, cts.Token);
+					} catch (OperationCanceledException) {
+					} catch (Exception e) {
+						logger.Error (e, "GetAdvices error");
 					}
 				});
 			}
@@ -216,7 +225,7 @@ namespace LuaTrader
 			order.SecCode = security;
 			order.Operation = volume > 0 ? QuikSharp.DataStructures.Operation.Buy :
 				QuikSharp.DataStructures.Operation.Sell;
-			order.Price = (decimal)price;
+			order.Price = (decimal)price;//TODO минимальный шаг цены, планка
 			order.Quantity = Math.Abs (volume);//TODO lot size
 			order.Account = portfolio;
 
@@ -344,7 +353,6 @@ namespace LuaTrader
 			foreach (var item in source) {
 				item.traderPosition = GetPosition (item.portfolio, item.security);
 			}
-			//TODO also log variation margin
 			var errorCount = source.Count (x => x.hasError);
 			if (errorCount > 0) {
 				logger.Error ("Текущая позиция содержит {ErrorCount} ошибок", errorCount);
